@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ارزیابی منافع ملی فروش</title>
+<style>
+  :root{--ink:#1a1a1a;--muted:#6b6b6b;--line:#cfcfcf;--head:#1F3864;--head-bg:#D9E2F3;--sum:#FFF2CC;--diff:#E2EFDA;--warn:#C00000;--bg:#f6f6f4;--card:#fff;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Vazirmatn,"Segoe UI",Tahoma,"Iranian Sans",sans-serif;font-size:15px;line-height:1.7}
+  .wrap{max-width:960px;margin:0 auto;padding:16px}
+  h1{font-size:20px;color:var(--head);margin:0 0 2px;text-align:center}
+  .sub{color:var(--muted);text-align:center;font-size:13px;margin-bottom:14px}
+  h2{font-size:16px;color:var(--head);margin:22px 0 8px;border-bottom:2px solid var(--head-bg);padding-bottom:4px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:10px}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  @media(max-width:640px){.grid{grid-template-columns:1fr}}
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:2px}
+  input,textarea,select{padding:7px 8px;border:1px solid var(--line);border-radius:6px;font:inherit;font-size:15px;background:#fff;color:var(--ink);width:100%}
+  input[readonly]{background:#f3f3f3;color:var(--muted)}
+  .num-in{direction:rtl;text-align:right;font-variant-numeric:tabular-nums}
+  textarea{min-height:64px;resize:vertical}
+  .money{display:grid;grid-template-columns:1fr auto;gap:4px;align-items:center}
+  .money .cur{width:auto;padding:7px 6px;font-size:13px}
+  .money .eq{grid-column:1/-1;font-size:12px;color:var(--head);min-height:1em}
+  .date{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:4px}
+  .row{border:1px solid var(--line);border-radius:8px;background:var(--card);margin-bottom:10px;overflow:hidden}
+  .row-h{display:flex;gap:8px;align-items:baseline;padding:8px 12px;background:var(--head-bg)}
+  .row-h .n{font-weight:700;color:var(--head);min-width:22px}
+  .row-h .q{flex:1}
+  .row-h .sign{font-weight:700;font-size:18px;color:var(--head)}
+  .row-b{padding:10px 12px;display:grid;grid-template-columns:1.2fr 1.2fr 1.3fr;gap:10px}
+  @media(max-width:640px){.row-b{grid-template-columns:1fr}}
+  .pair{display:grid;grid-template-columns:2.2fr 1fr;gap:6px;align-items:start}
+  .tol{position:relative}
+  .tol::after{content:"٪";position:absolute;left:8px;top:7px;color:var(--muted)}
+  .tol input{padding-left:22px}
+  .col-t{font-weight:700;font-size:13px;margin-bottom:4px}
+  .hint{font-size:12.5px;color:var(--muted);margin:6px 0 0}
+  details{margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}
+  summary{cursor:pointer;color:var(--head);font-size:13.5px;font-weight:700}
+  .calc{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+  @media(max-width:640px){.calc{grid-template-columns:1fr}}
+  .calc-out{grid-column:1/-1;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px}
+  button{font:inherit;padding:7px 14px;border-radius:6px;border:1px solid var(--head);background:var(--head);color:#fff;cursor:pointer;width:auto}
+  button.sec{background:#fff;color:var(--head)}
+  .result{border:2px solid var(--head);border-radius:8px;overflow:hidden;background:#fff}
+  .result table{width:100%;border-collapse:collapse}
+  .result th,.result td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right}
+  .result th{background:var(--head-bg);font-weight:700}
+  .result tr.sum td{background:var(--sum);font-weight:700}
+  .result tr.diff td{background:var(--diff);font-weight:700;font-size:16px}
+  .num{font-variant-numeric:tabular-nums;white-space:nowrap;direction:ltr;unicode-bidi:isolate;display:inline-block}
+  .warn{color:var(--warn);font-weight:700;font-size:14px;margin-top:8px}
+  .warn ul{margin:4px 0 0;padding-right:20px;font-weight:400}
+  .bar{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+  .foot{color:var(--muted);font-size:12.5px;margin-top:20px;text-align:center}
+  .riskrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:640px){.riskrow{grid-template-columns:1fr}}
+  #print{display:none}
+  @media print{
+    body{background:#fff;font-size:12px}
+    #app{display:none}
+    #print{display:block}
+    .pt{width:100%;border-collapse:collapse;margin-bottom:10px}
+    .pt th,.pt td{border:1px solid #888;padding:4px 6px;text-align:right;vertical-align:top}
+    .pt th{background:#D9E2F3}
+    .pt tr.sum td{background:#FFF2CC;font-weight:700}
+    .pt tr.diff td{background:#E2EFDA;font-weight:700}
+    .pt .lab{background:#EDEDED;font-weight:700;width:22%}
+    h1{font-size:17px}
+    .sig{display:flex;justify-content:space-between;margin-top:30px}
+    .sig div{width:45%;border-top:1px solid #000;padding-top:4px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div id="app">
+  <h1>فرم ارزیابی منافع ملی فروش</h1>
+  <div class="sub">بر پایهٔ مدل حسابداری منافع فطروسی (FIAM) — برای هر فروش. مبالغ را به یورو یا ریال وارد کنید؛ تبدیل با نرخ همین فرم انجام می‌شود. هر عدد: رقم مرکزی + تلرانس. خانهٔ خالی = «در دست نیست».</div>
+  <noscript><div class="warn">این پیش‌نمایش محاسبه نمی‌کند. فایل را در مرورگر (Safari یا Chrome) باز کنید.</div></noscript>
+
+  <h2>۱. مشخصات فروش</h2>
+  <div class="card grid">
+    <div><label>نام مشتری</label><input id="customer"></div>
+    <div><label>محصول / مدل / تعداد</label><input id="product"></div>
+    <div><label>رقیب (برند و نماینده)</label><input id="rival"></div>
+    <div><label>مدیر فروش</label><input id="manager"></div>
+    <div><label>نرخ تبدیل: هر یورو چند ریال</label><input type="text" inputmode="decimal" id="rate" class="num-in" placeholder="مثلاً ۱٬۱۰۰٬۰۰۰" data-kind="num"></div>
+    <div><label>تاریخ نرخ</label><div class="date"><select id="rdate_d"><option value="1">۱</option><option value="2">۲</option><option value="3">۳</option><option value="4">۴</option><option value="5">۵</option><option value="6">۶</option><option value="7">۷</option><option value="8">۸</option><option value="9">۹</option><option value="10">۱۰</option><option value="11">۱۱</option><option value="12">۱۲</option><option value="13">۱۳</option><option value="14">۱۴</option><option value="15">۱۵</option><option value="16">۱۶</option><option value="17">۱۷</option><option value="18">۱۸</option><option value="19">۱۹</option><option value="20">۲۰</option><option value="21">۲۱</option><option value="22">۲۲</option><option value="23">۲۳</option><option value="24">۲۴</option><option value="25">۲۵</option><option value="26">۲۶</option><option value="27">۲۷</option><option value="28">۲۸</option><option value="29">۲۹</option><option value="30">۳۰</option><option value="31">۳۱</option></select><select id="rdate_m"><option value="1">فروردین</option><option value="2">اردیبهشت</option><option value="3">خرداد</option><option value="4">تیر</option><option value="5">مرداد</option><option value="6">شهریور</option><option value="7">مهر</option><option value="8">آبان</option><option value="9">آذر</option><option value="10">دی</option><option value="11">بهمن</option><option value="12">اسفند</option></select><select id="rdate_y"><option value="1403">۱۴۰۳</option><option value="1404">۱۴۰۴</option><option value="1405">۱۴۰۵</option><option value="1406">۱۴۰۶</option><option value="1407">۱۴۰۷</option><option value="1408">۱۴۰۸</option><option value="1409">۱۴۰۹</option><option value="1410">۱۴۱۰</option></select></div></div>
+    <div><label>مبلغ پیشنهاد فطروسی</label><div class="money"><input type="text" inputmode="decimal" id="priceF" class="num-in" placeholder="" data-kind="money"><select id="cur_priceF" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_priceF"></span></div></div>
+    <div><label>مبلغ پیشنهاد رقیب</label><div class="money"><input type="text" inputmode="decimal" id="priceR" class="num-in" placeholder="" data-kind="money"><select id="cur_priceR" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_priceR"></span></div></div>
+    <div><label>تاریخ تکمیل فرم</label><div class="date"><select id="fdate_d"><option value="1">۱</option><option value="2">۲</option><option value="3">۳</option><option value="4">۴</option><option value="5">۵</option><option value="6">۶</option><option value="7">۷</option><option value="8">۸</option><option value="9">۹</option><option value="10">۱۰</option><option value="11">۱۱</option><option value="12">۱۲</option><option value="13">۱۳</option><option value="14">۱۴</option><option value="15">۱۵</option><option value="16">۱۶</option><option value="17">۱۷</option><option value="18">۱۸</option><option value="19">۱۹</option><option value="20">۲۰</option><option value="21">۲۱</option><option value="22">۲۲</option><option value="23">۲۳</option><option value="24">۲۴</option><option value="25">۲۵</option><option value="26">۲۶</option><option value="27">۲۷</option><option value="28">۲۸</option><option value="29">۲۹</option><option value="30">۳۰</option><option value="31">۳۱</option></select><select id="fdate_m"><option value="1">فروردین</option><option value="2">اردیبهشت</option><option value="3">خرداد</option><option value="4">تیر</option><option value="5">مرداد</option><option value="6">شهریور</option><option value="7">مهر</option><option value="8">آبان</option><option value="9">آذر</option><option value="10">دی</option><option value="11">بهمن</option><option value="12">اسفند</option></select><select id="fdate_y"><option value="1403">۱۴۰۳</option><option value="1404">۱۴۰۴</option><option value="1405">۱۴۰۵</option><option value="1406">۱۴۰۶</option><option value="1407">۱۴۰۷</option><option value="1408">۱۴۰۸</option><option value="1409">۱۴۰۹</option><option value="1410">۱۴۱۰</option></select></div></div>
+  </div>
+
+  <h2>۲. هفت پرسش</h2>
+  <div id="rows"><div class="row">
+  <div class="row-h"><span class="n">۱</span><span class="q">چند یورو از کشور بیرون می‌رود؟</span><span class="sign">−</span></div>
+  <div class="row-b">
+    <div><div class="col-t">فطروسی</div><div class="pair"><div class="money"><input type="text" inputmode="decimal" id="f0" class="num-in" placeholder="رقم مرکزی" data-kind="money"><select id="cur_f0" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_f0"></span></div><div class="tol"><input type="text" inputmode="decimal" id="ft0" class="num-in" placeholder="تلرانس" data-kind="num"></div></div><div class="hint">فقط قیمت خرید قطعات وارداتی همین دستگاه (از امور خرید).</div></div>
+    <div><div class="col-t">رقیب</div><div class="pair"><div class="money"><input type="text" inputmode="decimal" id="r0" class="num-in" placeholder="رقم مرکزی" data-kind="money"><select id="cur_r0" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_r0"></span></div><div class="tol"><input type="text" inputmode="decimal" id="rt0" class="num-in" placeholder="تلرانس" data-kind="num"></div></div><div class="hint">کل مبلغ پیشنهاد رقیب.</div></div>
+    <div><div class="col-t">منبع عدد</div><textarea id="s0" placeholder="نام شخص یا سند با تاریخ — چنان‌که همکار دیگری بتواند همان عدد را پیدا کند"></textarea></div>
+    
+  </div></div>
+<div class="row">
+  <div class="row-h"><span class="n">۲</span><span class="q">چند یورو در داخل می‌ماند و تبدیل می‌شود؟</span><span class="sign">+</span></div>
+  <div class="row-b">
+    <div><div class="col-t">فطروسی</div><div class="pair"><div class="money"><input type="text" inputmode="decimal" id="f1" class="num-in" placeholder="رقم مرکزی" data-kind="money"><select id="cur_f1" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_f1"></span></div><div class="tol"><input type="text" inputmode="decimal" id="ft1" class="num-in" placeholder="تلرانس" data-kind="num"></div></div><div class="hint">دستمزد تولید + تأمین داخلی + مالیات و بیمهٔ همین قرارداد. سود شرکت را ننویسید.</div></div>
+    <div><div class="col-t">رقیب</div><div class="pair"><div class="money"><input type="text" inputmode="decimal" id="r1" class="num-in" placeholder="رقم مرکزی" data-kind="money"><select id="cur_r1" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_r1"></span></div><div class="tol"><input type="text" inputmode="decimal" id="rt1" class="num-in" placeholder="تلرانس" data-kind="num"></div></div><div class="hint">فقط مزد نصب و خدمات داخلی. حاشیهٔ سود واردکننده را ننویسید.</div></div>
+    <div><div class="col-t">منبع عدد</div><textarea id="s1" placeholder="نام شخص یا سند با تاریخ — چنان‌که همکار دیگری بتواند همان عدد را پیدا کند"></textarea></div>
+    
+  </div></div>
+<div class="row">
+  <div class="row-h"><span class="n">۳</span><span class="q">چه چیزی در کشور می‌ماند که سال بعد هم به کار بیاید؟ (توانمندی)</span><span class="sign">+</span></div>
+  <div class="row-b">
+    <div><div class="col-t">فطروسی</div><div class="pair"><div class="money"><input type="text" inputmode="decimal" id="f2" class="num-in" placeholder="رقم مرکزی" data-kind="money"><select id="cur_f2" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_f2"></span></div><div class="tol"><input type="text" inputmode="decimal" id="ft2" class="num-in" placeholder="تلرانس" data-kind="num"></div></div><div class="hint">هزینهٔ جایگزینی تیم طراحی و خط تولید × سهم این قرارداد از فروش سالانه.</div></div>
+    <div><div class="col-t">رقیب</div><div class="pair"><div class="money"><input type="text" id="r2" value="0" readonly class="num-in" data-kind="money"><select id="cur_r2" class="cur" disabled><option value="EUR">یورو</option></select><span class="eq"></span></div><div class="tol"><input type="text" id="rt2" value="0" readonly class="num-in" data-kind="num"></div></div><div class="hint">برای خرید وارداتی صفر — داشتنِ دستگاه، توانِ ساختنش نیست.</div></div>
+    <div><div class="col-t">منبع عدد</div><textarea id="s2" placeholder="نام شخص یا سند با تاریخ — چنان‌که همکار دیگری بتواند همان عدد را پیدا کند"></textarea></div>
+    
+  </div></div>
+<div class="row">
+  <div class="row-h"><span class="n">۴</span><span class="q">در عمر دستگاه (۱۰ سال) خدمات و قطعات یدکی چند یورو ارز می‌برد؟</span><span class="sign">−</span></div>
+  <div class="row-b">
+    <div><div class="col-t">فطروسی</div><div class="pair"><div class="money"><input type="text" inputmode="decimal" id="f3" class="num-in" placeholder="رقم مرکزی" data-kind="money"><select id="cur_f3" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_f3"></span></div><div class="tol"><input type="text" inputmode="decimal" id="ft3" class="num-in" placeholder="تلرانس" data-kind="num"></div></div><div class="hint">سهم ارزی یدکی و سرویس ۱۰ سال + هزینهٔ پوشش ریسک ۶-ب (اسکرو مستندات، ذخیرهٔ یدکی، آموزش).</div></div>
+    <div><div class="col-t">رقیب</div><div class="pair"><div class="money"><input type="text" inputmode="decimal" id="r3" class="num-in" placeholder="رقم مرکزی" data-kind="money"><select id="cur_r3" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_r3"></span></div><div class="tol"><input type="text" inputmode="decimal" id="rt3" class="num-in" placeholder="تلرانس" data-kind="num"></div></div><div class="hint">یدکی و سرویس ۱۰ سال؛ اگر زیر تحریم از مسیر واسطه است، همان قیمت.</div></div>
+    <div><div class="col-t">منبع عدد</div><textarea id="s3" placeholder="نام شخص یا سند با تاریخ — چنان‌که همکار دیگری بتواند همان عدد را پیدا کند"></textarea></div>
+    
+  </div></div>
+<div class="row">
+  <div class="row-h"><span class="n">۵</span><span class="q">با این انتخاب از چه چیزی گذشتیم؟ (هزینهٔ فرصت)</span><span class="sign">−</span></div>
+  <div class="row-b">
+    <div><div class="col-t">فطروسی</div><div class="pair"><div class="money"><input type="text" inputmode="decimal" id="f4" class="num-in" placeholder="رقم مرکزی" data-kind="money"><select id="cur_f4" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_f4"></span></div><div class="tol"><input type="text" inputmode="decimal" id="ft4" class="num-in" placeholder="تلرانس" data-kind="num"></div></div><div class="hint">اگر بازده یا قابلیت اطمینان ما پایین‌تر است: توقف اضافی و تلفات اضافی — ماشین‌حساب زیر.</div></div>
+    <div><div class="col-t">رقیب</div><div class="pair"><div class="money"><input type="text" inputmode="decimal" id="r4" class="num-in" placeholder="رقم مرکزی" data-kind="money"><select id="cur_r4" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_r4"></span></div><div class="tol"><input type="text" inputmode="decimal" id="rt4" class="num-in" placeholder="تلرانس" data-kind="num"></div></div><div class="hint">کاری که تیم داخلی با این قرارداد نکرد = همان عدد ردیف ۳ فطروسی.</div></div>
+    <div><div class="col-t">منبع عدد</div><textarea id="s4" placeholder="نام شخص یا سند با تاریخ — چنان‌که همکار دیگری بتواند همان عدد را پیدا کند"></textarea></div>
+    <details style="grid-column:1/-1"><summary>ماشین‌حساب ردیف ۵ (ستون فطروسی)</summary><div class="calc"><div><label>ساعت توقف اضافی در ۱۰ سال</label><input type="text" inputmode="decimal" id="c5_h" class="num-in" placeholder="" data-kind="num"></div><div><label>هزینهٔ هر ساعت توقف مشتری</label><div class="money"><input type="text" inputmode="decimal" id="c5_ch" class="num-in" placeholder="" data-kind="money"><select id="cur_c5_ch" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_c5_ch"></span></div></div><div><label>اختلاف تلفات (کیلووات)</label><input type="text" inputmode="decimal" id="c5_kw" class="num-in" placeholder="" data-kind="num"></div><div><label>ساعت کار در ۱۰ سال</label><input type="text" inputmode="decimal" id="c5_hrs" class="num-in" placeholder="" data-kind="num"></div><div><label>قیمت برق (هر کیلووات‌ساعت)</label><div class="money"><input type="text" inputmode="decimal" id="c5_pe" class="num-in" placeholder="" data-kind="money"><select id="cur_c5_pe" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_c5_pe"></span></div></div><div class="calc-out"><span id="c5_txt" class="hint"></span><strong>نتیجه: <span id="c5_res" class="num">—</span> یورو</strong> <button type="button" class="sec" onclick="applyCalc('c5',4)">انتقال به ردیف</button></div></div></details>
+  </div></div>
+<div class="row">
+  <div class="row-h"><span class="n">۷</span><span class="q">این فروش چقدر به پایین ماندن قیمت واردات برای کل کشور کمک می‌کند؟ (اثر مهار قیمت)</span><span class="sign">+</span></div>
+  <div class="row-b">
+    <div><div class="col-t">فطروسی</div><div class="pair"><div class="money"><input type="text" inputmode="decimal" id="f5" class="num-in" placeholder="رقم مرکزی" data-kind="money"><select id="cur_f5" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_f5"></span></div><div class="tol"><input type="text" inputmode="decimal" id="ft5" class="num-in" placeholder="تلرانس" data-kind="num"></div></div><div class="hint">خرید سالانهٔ کشور × (ضریب − ۱) × سهم این قرارداد در بقای تولید داخلی — ماشین‌حساب زیر. ضریب حدسی ممنوع؛ بدون سند خالی بگذارید.</div></div>
+    <div><div class="col-t">رقیب</div><div class="pair"><div class="money"><input type="text" id="r5" value="0" readonly class="num-in" data-kind="money"><select id="cur_r5" class="cur" disabled><option value="EUR">یورو</option></select><span class="eq"></span></div><div class="tol"><input type="text" id="rt5" value="0" readonly class="num-in" data-kind="num"></div></div><div class="hint">صفر — نبودِ این فایده همان زیان است؛ دوبار حساب نمی‌شود.</div></div>
+    <div><div class="col-t">منبع عدد</div><textarea id="s5" placeholder="نام شخص یا سند با تاریخ — چنان‌که همکار دیگری بتواند همان عدد را پیدا کند"></textarea></div>
+    <details style="grid-column:1/-1"><summary>ماشین‌حساب ردیف ۷ (ستون فطروسی)</summary><div class="calc"><div><label>کل خرید سالانهٔ همهٔ خریداران کشور از این ردهٔ محصول (داخلی و وارداتی)</label><div class="money"><input type="text" inputmode="decimal" id="c7_mkt" class="num-in" placeholder="" data-kind="money"><select id="cur_c7_mkt" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_c7_mkt"></span></div></div><div><label>قیمت واحد واردات در رده‌ای که تولید داخلی دارد (هر kVA)</label><div class="money"><input type="text" inputmode="decimal" id="c7_pWith" class="num-in" placeholder="" data-kind="money"><select id="cur_c7_pWith" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_c7_pWith"></span></div></div><div><label>قیمت واحد واردات در رده‌ای که تولید داخلی ندارد (هر kVA)</label><div class="money"><input type="text" inputmode="decimal" id="c7_pWithout" class="num-in" placeholder="" data-kind="money"><select id="cur_c7_pWithout" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_c7_pWithout"></span></div></div><div><label>مبلغ همین قرارداد</label><div class="money"><input type="text" inputmode="decimal" id="c7_contract" class="num-in" placeholder="" data-kind="money"><select id="cur_c7_contract" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_c7_contract"></span></div></div><div><label>حداقل فروش سالانهٔ فطروسی از این محصول که کارخانه با آن سرپا می‌ماند (از مدیریت بگیرید)</label><div class="money"><input type="text" inputmode="decimal" id="c7_survive" class="num-in" placeholder="" data-kind="money"><select id="cur_c7_survive" class="cur"><option value="EUR">یورو</option><option value="IRR">ریال</option></select><span class="eq" id="eq_c7_survive"></span></div></div><div class="calc-out"><span id="c7_txt" class="hint"></span><strong>نتیجه: <span id="c7_res" class="num">—</span> یورو</strong> <button type="button" class="sec" onclick="applyCalc('c7',5)">انتقال به ردیف</button></div></div></details>
+  </div></div></div>
+
+  <h2>۳. مواجهه با ریسک (فقط شرح — با عدد جمع نمی‌شود)</h2>
+  <div class="card riskrow">
+    <div><label>۶-الف — ریسک گزینهٔ رقیب: چه چیزی ممکن است قطع شود، چقدر احتمال دارد، مشتری چه می‌کند</label><textarea id="riskR"></textarea></div>
+    <div><label>۶-ب — ریسک گزینهٔ فطروسی: تعطیلی یا ناتوانی در ادامهٔ خدمات، قطع قطعهٔ وارداتی؛ و پوششی که می‌دهیم (هزینهٔ پوشش در ردیف ۴ آمده باشد)</label><textarea id="riskF"></textarea></div>
+  </div>
+
+  <h2>۴. نتیجه (یورو)</h2>
+  <div class="result"><table><thead><tr><th></th><th>فطروسی</th><th>رقیب</th></tr></thead><tbody id="resBody"><tr><td>۱. چند یورو از کشور بیرون می‌رود؟</td><td class="num">—</td><td class="num">—</td></tr><tr><td>۲. چند یورو در داخل می‌ماند و تبدیل می‌شود؟</td><td class="num">—</td><td class="num">—</td></tr><tr><td>۳. چه چیزی در کشور می‌ماند که سال بعد هم به کار بیاید؟ (توانمندی)</td><td class="num">—</td><td class="num">—</td></tr><tr><td>۴. در عمر دستگاه (۱۰ سال) خدمات و قطعات یدکی چند یورو ارز می‌برد؟</td><td class="num">—</td><td class="num">—</td></tr><tr><td>۵. با این انتخاب از چه چیزی گذشتیم؟ (هزینهٔ فرصت)</td><td class="num">—</td><td class="num">—</td></tr><tr><td>۷. این فروش چقدر به پایین ماندن قیمت واردات برای کل کشور کمک می‌کند؟ (اثر مهار قیمت)</td><td class="num">—</td><td class="num">—</td></tr><tr class="sum"><td>ارزش ملی خالص = (۲ + ۳ + ۷) − (۱ + ۴ + ۵)</td><td class="num">—</td><td class="num">—</td></tr><tr class="diff"><td>تفاضل به سود خرید از فطروسی</td><td colspan="2">—</td></tr></tbody></table></div>
+  <div id="warnBox"></div>
+
+  <div class="bar">
+    <button onclick="window.print()">چاپ / ذخیرهٔ PDF فرم پرشده</button>
+    <button class="sec" onclick="saveJSON()">ذخیرهٔ فایل بایگانی</button>
+    <button class="sec" onclick="document.getElementById('loadFile').click()">بارگذاری فایل بایگانی</button>
+    <input type="file" id="loadFile" accept=".json" style="display:none" onchange="loadJSON(this)">
+    <button class="sec" onclick="clearAll()">پاک کردن فرم</button>
+  </div>
+  <div class="foot">روش محاسبهٔ هر ردیف در «روش اجرایی فرم» است. ریسک هرگز به عدد تبدیل نمی‌شود؛ هزینهٔ پوشش ریسک در ردیف ۴ یا ۵ می‌آید.</div>
+</div>
+<div id="print"></div>
+</div>
+
+<script>
+const ROWS = [{"n":"۱","q":"چند یورو از کشور بیرون می‌رود؟","sign":-1,"rivalZero":false,"calc":null},{"n":"۲","q":"چند یورو در داخل می‌ماند و تبدیل می‌شود؟","sign":1,"rivalZero":false,"calc":null},{"n":"۳","q":"چه چیزی در کشور می‌ماند که سال بعد هم به کار بیاید؟ (توانمندی)","sign":1,"rivalZero":true,"calc":null},{"n":"۴","q":"در عمر دستگاه (۱۰ سال) خدمات و قطعات یدکی چند یورو ارز می‌برد؟","sign":-1,"rivalZero":false,"calc":null},{"n":"۵","q":"با این انتخاب از چه چیزی گذشتیم؟ (هزینهٔ فرصت)","sign":-1,"rivalZero":false,"calc":"c5"},{"n":"۷","q":"این فروش چقدر به پایین ماندن قیمت واردات برای کل کشور کمک می‌کند؟ (اثر مهار قیمت)","sign":1,"rivalZero":true,"calc":"c7"}];
+const MONTHS = ["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
+const $ = id => document.getElementById(id);
+const faN = n => new Intl.NumberFormat('fa-IR',{maximumFractionDigits:0}).format(n);
+const fa2 = n => new Intl.NumberFormat('fa-IR',{maximumFractionDigits:2}).format(n);
+// parse Persian/Arabic/Latin digits, separators
+function parse(s){ if(s===undefined||s===null) return NaN; s=String(s).trim(); if(!s) return NaN;
+  s=s.replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[٬,\s_']/g,'').replace(/[٫]/g,'.');
+  const v=parseFloat(s); return isNaN(v)?NaN:v; }
+function fmtIn(el){ const v=parse(el.value); if(isNaN(v)){ if(el.value.trim()!=='') el.value=''; return; } el.value = el.dataset.kind==='money'? faN(v) : fa2(v); }
+const rate = () => parse($('rate').value);
+// value of a money field in euro
+function eur(id){ const v=parse($(id).value); if(isNaN(v)) return NaN; const c=$('cur_'+id); if(c && c.value==='IRR'){ const r=rate(); return (isNaN(r)||r<=0)? NaN : v/r; } return v; }
+function num(id){ return parse($(id).value); }
+function refreshEq(){ document.querySelectorAll('.money').forEach(m=>{ const inp=m.querySelector('input'); const c=m.querySelector('select'); const eq=m.querySelector('.eq'); if(!inp||!eq) return;
+  if(c && c.value==='IRR' && !inp.readOnly){ const e=eur(inp.id); eq.textContent = isNaN(e)? (isNaN(parse(inp.value))?'':'نرخ تبدیل را وارد کنید') : '≈ '+faN(e)+' یورو'; } else eq.textContent=''; }); }
+
+const CALCS = {
+  c5:{ f:v=> (v.h||0)*(v.ch||0) + (v.kw||0)*(v.hrs||0)*(v.pe||0), keys:['h','ch','kw','hrs','pe'], moneyKeys:['ch','pe'],
+       txt:v=>'(ساعت توقف '+fx(v.h)+' × '+fx(v.ch)+' €) + ('+fx(v.kw)+' kW × '+fx(v.hrs)+' h × '+fx(v.pe)+' €)' },
+  c7:{ f:v=>{ if(!v.pWith||!v.survive) return NaN; const k=v.pWithout/v.pWith; return (v.mkt||0)*(k-1)*((v.contract||0)/v.survive); }, keys:['mkt','pWith','pWithout','contract','survive'], moneyKeys:['mkt','pWith','pWithout','contract','survive'],
+       txt:v=>{ const k=v.pWith? v.pWithout/v.pWith : NaN; const sh=v.survive? (v.contract||0)/v.survive : NaN; return 'ضریب = '+fx(v.pWithout)+' ÷ '+fx(v.pWith)+' = '+(isNaN(k)?'—':fa2(k))+' ؛ سهم در بقا = '+(isNaN(sh)?'—':fa2(sh*100)+'٪')+' ؛ عدد = '+fx(v.mkt)+' € × (ضریب − ۱) × سهم'+((!isNaN(sh)&&sh>0.2)?' — هشدار: سهم در بقا باید کسر کوچکی باشد؛ عدد «حداقل فروش سالانهٔ فطروسی» را بازبینی کنید.':''); } },
+};
+const fx = n => (n===undefined||isNaN(n))?'—':fa2(n);
+function calcVals(c){ const v={}; CALCS[c].keys.forEach(k=>{ const id=c+'_'+k; v[k]= CALCS[c].moneyKeys.includes(k)? eur(id) : num(id); if(isNaN(v[k])) v[k]=undefined; }); return v; }
+function applyCalc(c,i){ const v=calcVals(c); const res=CALCS[c].f(v); if(isNaN(res)) return; $('f'+i).value=faN(Math.round(res)); $('cur_f'+i).value='EUR'; const s=$('s'+i); s.value=(s.value?s.value+' | ':'')+CALCS[c].txt(v); update(); }
+
+const dateStr = id => faN(+$(id+'_d').value)+' '+MONTHS[+$(id+'_m').value-1]+' '+$(id+'_y').value.toLocaleString('fa-IR',{useGrouping:false}).replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+function setToday(id){ try{ const p=new Intl.DateTimeFormat('en-u-ca-persian-nu-latn',{day:'numeric',month:'numeric',year:'numeric'}).formatToParts(new Date()); const g=t=>+p.find(x=>x.type===t).value; $(id+'_d').value=g('day'); $(id+'_m').value=g('month'); $(id+'_y').value=g('year'); }catch(e){} }
+
+function update(){
+  refreshEq();
+  Object.keys(CALCS).forEach(c=>{ const v=calcVals(c); const r=CALCS[c].f(v); $(c+'_res').textContent=isNaN(r)?'—':faN(Math.round(r)); $(c+'_txt').textContent=CALCS[c].txt(v); });
+  let nF=0,nR=0,missing=[],tol=0,anyF=false,anyR=false;
+  const vals=[];
+  ROWS.forEach((r,i)=>{ const f=eur('f'+i), rv=eur('r'+i); vals.push([f,rv]);
+    if(isNaN(f)) missing.push('ردیف '+r.n+' — فطروسی'); else {nF+=r.sign*f; anyF=true;}
+    if(isNaN(rv)) missing.push('ردیف '+r.n+' — رقیب'); else {nR+=r.sign*rv; anyR=true;}
+    if(['۳','۵','۷'].includes(r.n)) tol=Math.max(tol, num('ft'+i)||0, num('rt'+i)||0);
+    if(!$('s'+i).value.trim() && (!isNaN(f)||(!isNaN(rv)&&!r.rivalZero))) missing.push('ردیف '+r.n+' — منبع عدد خالی است'); });
+  if(document.querySelectorAll('.money select').length && [...document.querySelectorAll('.money select')].some(s=>s.value==='IRR') && (isNaN(rate())||rate()<=0)) missing.unshift('نرخ تبدیل یورو به ریال وارد نشده');
+  $('resBody').innerHTML = ROWS.map((r,i)=>'<tr><td>'+r.n+'. '+r.q+'</td><td class="num">'+sgn(r.sign,vals[i][0])+'</td><td class="num">'+sgn(r.sign,vals[i][1])+'</td></tr>').join('')+
+    '<tr class="sum"><td>ارزش ملی خالص = (۲ + ۳ + ۷) − (۱ + ۴ + ۵)</td><td class="num">'+(anyF?signed(nF):'—')+'</td><td class="num">'+(anyR?signed(nR):'—')+'</td></tr>'+
+    '<tr class="diff"><td>تفاضل به سود خرید از فطروسی</td><td colspan="2">'+((anyF&&anyR)? '<span class="num">'+signed(nF-nR)+'</span> یورو ± '+faN(tol)+'٪':'—')+'</td></tr>';
+  $('warnBox').innerHTML = missing.length? '<div class="warn">نتیجه کامل نیست — این خانه‌ها «در دست نیست»:<ul>'+missing.map(m=>'<li>'+m+'</li>').join('')+'</ul></div>':'';
+  persist(); renderPrint(nF,nR,tol,anyF&&anyR,missing,vals);
+}
+const sgn=(s,v)=>isNaN(v)?'—':(s>0?'+':'−')+faN(Math.abs(Math.round(v)));
+const signed=v=>(v<0?'−':'+')+faN(Math.abs(Math.round(v)));
+const money$ = id => { const v=parse($(id).value); if(isNaN(v)) return '—'; const c=$('cur_'+id); const e=eur(id); return c&&c.value==='IRR'? faN(v)+' ریال (≈ '+(isNaN(e)?'—':faN(e))+' €)' : faN(v)+' €'; };
+
+function renderPrint(nF,nR,tol,ok,missing,vals){
+  const g=id=>$(id).value||'';
+  const cellv=(i,c)=>{ const v=vals[i][c==='f'?0:1], t=num(c+'t'+i); const raw=$(c+i); const cur=$('cur_'+c+i);
+    if(isNaN(v)) return 'در دست نیست'; let s=faN(Math.round(v))+(isNaN(t)||t===0?'':' ± '+faN(t)+'٪'); if(cur&&cur.value==='IRR') s+='<br><small>('+faN(parse(raw.value))+' ریال)</small>'; return s; };
+  $('print').innerHTML='<h1>فرم ارزیابی منافع ملی فروش</h1><div class="sub">بر پایهٔ مدل حسابداری منافع فطروسی (FIAM) — به یورو</div>'+
+    '<table class="pt"><tr><td class="lab">نام مشتری</td><td>'+g('customer')+'</td><td class="lab">محصول / مدل / تعداد</td><td>'+g('product')+'</td></tr>'+
+    '<tr><td class="lab">رقیب</td><td>'+g('rival')+'</td><td class="lab">نرخ تبدیل</td><td>'+(isNaN(rate())?'—':'هر یورو '+faN(rate())+' ریال، '+dateStr('rdate'))+'</td></tr>'+
+    '<tr><td class="lab">پیشنهاد فطروسی</td><td>'+money$('priceF')+'</td><td class="lab">پیشنهاد رقیب</td><td>'+money$('priceR')+'</td></tr>'+
+    '<tr><td class="lab">مدیر فروش</td><td>'+g('manager')+'</td><td class="lab">تاریخ تکمیل</td><td>'+dateStr('fdate')+'</td></tr></table>'+
+    '<table class="pt"><tr><th style="width:4%"></th><th>پرسش</th><th style="width:5%">علامت</th><th style="width:15%">فطروسی (€)</th><th style="width:15%">رقیب (€)</th><th style="width:24%">منبع عدد</th></tr>'+
+    ROWS.map((r,i)=>'<tr><td>'+r.n+'</td><td>'+r.q+'</td><td>'+(r.sign>0?'+':'−')+'</td><td>'+cellv(i,'f')+'</td><td>'+cellv(i,'r')+'</td><td style="font-size:10px">'+g('s'+i)+'</td></tr>').join('')+
+    '<tr class="sum"><td></td><td>ارزش ملی خالص = (۲ + ۳ + ۷) − (۱ + ۴ + ۵)</td><td></td><td>'+(ok?signed(nF):'—')+'</td><td>'+(ok?signed(nR):'—')+'</td><td></td></tr>'+
+    '<tr class="diff"><td></td><td>تفاضل به سود خرید از فطروسی و تلرانس</td><td></td><td colspan="3">'+(ok? signed(nF-nR)+' یورو ± '+faN(tol)+'٪' : 'ناقص — '+faN(missing.length)+' مورد در دست نیست')+'</td></tr>'+
+    '<tr><td>۶-الف</td><td>ریسک گزینهٔ رقیب</td><td></td><td colspan="3">'+g('riskR').replace(/\n/g,'<br>')+'</td></tr>'+
+    '<tr><td>۶-ب</td><td>ریسک گزینهٔ فطروسی و پوشش آن</td><td></td><td colspan="3">'+g('riskF').replace(/\n/g,'<br>')+'</td></tr></table>'+
+    '<div class="sig"><div>امضای مدیر فروش</div><div>تأیید مدیریت</div></div>';
+}
+function collect(){ const o={}; document.querySelectorAll('input:not([type=file]),textarea,select').forEach(e=>o[e.id]=e.value); return o; }
+function fill(o){ Object.entries(o).forEach(([k,v])=>{ const e=$(k); if(e && !e.readOnly && !e.disabled) e.value=v; }); update(); }
+function persist(){ try{ localStorage.setItem('fiam-form', JSON.stringify(collect())); }catch(e){} }
+function restore(){ try{ const s=localStorage.getItem('fiam-form'); if(s){ fill(JSON.parse(s)); return true; } }catch(e){} return false; }
+async function saveJSON(){ const o=collect(); const name='manafe-melli-'+(o.customer||'form').replace(/\s+/g,'-')+'.json'; const txt=JSON.stringify(o,null,2);
+  try{ if(window.claude && typeof claude.use==='function'){ const d=await claude.use('downloads'); if(d){ try{ await d.save({filename:name, data:txt}); }catch(e){ if(e&&e.code!=='declined') alert('ذخیره در این نمایشگر ممکن نشد: '+(e.message||e.code)); } return; } } }catch(e){}
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'})); a.download=name; a.click(); }
+function loadJSON(inp){ const f=inp.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>{ try{ fill(JSON.parse(rd.result)); }catch(e){ alert('فایل معتبر نیست'); } }; rd.readAsText(f); inp.value=''; }
+function clearAll(){ if(!confirm('همهٔ خانه‌ها پاک شود؟')) return; document.querySelectorAll('input:not([type=file]),textarea').forEach(e=>{ if(!e.readOnly) e.value=''; }); document.querySelectorAll('.money select').forEach(s=>{ if(!s.disabled) s.value='EUR'; }); setToday('fdate'); setToday('rdate'); update(); }
+document.querySelectorAll('input,textarea,select').forEach(e=>e.addEventListener('input',update));
+document.querySelectorAll('.num-in').forEach(e=>{ e.addEventListener('blur',()=>{ fmtIn(e); update(); }); });
+document.querySelectorAll('.money select').forEach(s=>s.addEventListener('change',update));
+if(!restore()){ setToday('fdate'); setToday('rdate'); }
+update();
+</script>
+</body>
+</html>
